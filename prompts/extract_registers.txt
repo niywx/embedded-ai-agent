@@ -1,0 +1,100 @@
+你的任务是从提供的 Datasheet 或寄存器文档中提取寄存器定义信息。
+
+## 输入
+文档文本内容（可能包含 OCR 识别结果）
+
+## 输出要求
+严格按照以下 JSON 格式输出，不要添加任何其他内容：
+
+```json
+{
+  "registers": [
+    {
+      "name": "寄存器名称",
+      "address": "寄存器地址（十六进制）",
+      "description": "寄存器功能描述",
+      "reset_value": "复位默认值",
+      "fields": [
+        {
+          "bit": "位号或位范围（如 '7' 或 '7:4'）",
+          "name": "位字段名称",
+          "description": "位字段功能描述",
+          "reset_value": "该位的复位值",
+          "rw": "读写属性（R/W/R/W）"
+        }
+      ]
+    }
+  ]
+}
+```
+
+## 重要规则
+
+1. **优先提取关键寄存器**（为了避免输出过长）
+   - GPIO/IO口相关寄存器（TRIS, PORT, LAT, ANSEL等）
+   - 中断相关寄存器（IE, IP, IF等）
+   - 定时器相关寄存器（TCON, TMOD, TH, TL等）
+   - 串口相关寄存器（SCON, SBUF等）
+   - 其他核心外设寄存器
+   - **跳过**：详细的位字段描述可以简化，只保留关键信息
+
+2. **不得编造信息**
+   - 只提取文档中明确存在的寄存器
+   - 如果某个字段不存在或不清楚，使用 "unknown" 或 "N/A"
+   - 不要猜测或推断未明确说明的信息
+
+3. **地址格式**
+   - 统一使用十六进制格式，如 "0x19", "0xFF"
+   - 如果文档中没有地址，标记为 "unknown"
+
+4. **位字段提取**
+   - 准确识别每个位的功能
+   - 注意位的编号顺序（LSB 为 0 还是 MSB 为 0）
+   - 正确提取位的读写属性
+
+5. **特殊情况处理**
+   - 如果文档质量差、OCR 错误多，在 description 中说明
+   - 如果寄存器定义不完整，标记缺失的部分
+   - 保留原文档中的关键术语（不要随意翻译）
+
+6. **常见寄存器类型识别**
+   - 方向寄存器：TRIS, DDR, DIR
+   - 数据寄存器：PORT, LAT, PIN
+   - 配置寄存器：CONFIG, CTRL, CFG
+   - 状态寄存器：STATUS, FLAG
+
+## 示例
+
+输入文档片段：
+```
+TRISC (Address: 0x19)
+Port C Direction Control Register
+Bit 7-0: TRISC<7:0> - Port C direction bits
+  1 = Input, 0 = Output
+Reset value: 0xFF
+```
+
+期望输出：
+```json
+{
+  "registers": [
+    {
+      "name": "TRISC",
+      "address": "0x19",
+      "description": "Port C Direction Control Register",
+      "reset_value": "0xFF",
+      "fields": [
+        {
+          "bit": "7:0",
+          "name": "TRISC<7:0>",
+          "description": "Port C direction bits. 1 = Input, 0 = Output",
+          "reset_value": "0xFF",
+          "rw": "R/W"
+        }
+      ]
+    }
+  ]
+}
+```
+
+现在请处理提供的文档内容。

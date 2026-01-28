@@ -1,0 +1,133 @@
+{
+  "mcu_model": "STM32F103C8T6",
+  "description": "基于STM32F103的简单控制板原理图分析",
+  "analyzed_date": "2026-01-26",
+  
+  "pin_mappings": [
+    {
+      "mcu_pin": "PA0",
+      "pin_number": "14",
+      "gpio_port": "GPIOA",
+      "gpio_bit": "0",
+      "component": "LED1",
+      "component_type": "LED",
+      "function": "状态指示灯",
+      "direction": "output",
+      "active_level": "high",
+      "description": "红色LED,通过220Ω电阻连接到GND,高电平点亮",
+      "electrical_connection": "MCU_PA0 -> R1(220Ω) -> LED1 -> GND"
+    },
+    {
+      "mcu_pin": "PA1",
+      "pin_number": "15",
+      "gpio_port": "GPIOA",
+      "gpio_bit": "1",
+      "component": "KEY1",
+      "component_type": "Button",
+      "function": "用户按键",
+      "direction": "input",
+      "active_level": "low",
+      "pull_mode": "pull_up",
+      "description": "按键按下时接地,需要配置内部上拉电阻",
+      "electrical_connection": "MCU_PA1 -> KEY1 -> GND (内部上拉)"
+    },
+    {
+      "mcu_pin": "PA9",
+      "pin_number": "42",
+      "gpio_port": "GPIOA",
+      "gpio_bit": "9",
+      "component": "UART1_TX",
+      "component_type": "UART",
+      "function": "串口发送",
+      "direction": "output",
+      "alternate_function": "USART1_TX",
+      "description": "连接到CH340 USB转串口芯片的RXD引脚",
+      "electrical_connection": "MCU_PA9 -> CH340_RXD"
+    },
+    {
+      "mcu_pin": "PA10",
+      "pin_number": "43",
+      "gpio_port": "GPIOA",
+      "gpio_bit": "10",
+      "component": "UART1_RX",
+      "component_type": "UART",
+      "function": "串口接收",
+      "direction": "input",
+      "alternate_function": "USART1_RX",
+      "description": "连接到CH340 USB转串口芯片的TXD引脚",
+      "electrical_connection": "MCU_PA10 -> CH340_TXD"
+    },
+    {
+      "mcu_pin": "PC13",
+      "pin_number": "2",
+      "gpio_port": "GPIOC",
+      "gpio_bit": "13",
+      "component": "BUZZER",
+      "component_type": "Buzzer",
+      "function": "蜂鸣器",
+      "direction": "output",
+      "active_level": "high",
+      "description": "有源蜂鸣器,高电平响",
+      "electrical_connection": "MCU_PC13 -> BUZZER -> GND"
+    }
+  ],
+  
+  "input_pins": [
+    {
+      "pin": "PA1",
+      "component": "KEY1",
+      "type": "digital_input",
+      "trigger": "falling_edge",
+      "description": "按键检测,按下时低电平"
+    }
+  ],
+  
+  "output_pins": [
+    {
+      "pin": "PA0",
+      "component": "LED1",
+      "type": "digital_output",
+      "initial_state": "low",
+      "description": "状态指示LED"
+    },
+    {
+      "pin": "PC13",
+      "component": "BUZZER",
+      "type": "digital_output",
+      "initial_state": "low",
+      "description": "蜂鸣器控制"
+    }
+  ],
+  
+  "communication_interfaces": [
+    {
+      "interface": "USART1",
+      "tx_pin": "PA9",
+      "rx_pin": "PA10",
+      "baud_rate": "115200",
+      "purpose": "与PC通信(调试/数据传输)",
+      "device": "CH340 USB转串口"
+    }
+  ],
+  
+  "special_requirements": [
+    {
+      "requirement": "PA1需要配置内部上拉电阻",
+      "reason": "按键没有外部上拉,依赖MCU内部上拉"
+    },
+    {
+      "requirement": "PA9/PA10需要配置为复用功能模式",
+      "reason": "用于USART1外设,不是普通GPIO"
+    },
+    {
+      "requirement": "注意LED1的电流限制",
+      "reason": "220Ω电阻限流,MCU输出电流约15mA"
+    }
+  ],
+  
+  "power_info": {
+    "vcc": "3.3V",
+    "gnd_pins": ["VSS1", "VSS2"],
+    "notes": "所有GPIO输出电平为3.3V"
+  }
+}

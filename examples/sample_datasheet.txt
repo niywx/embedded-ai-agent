@@ -1,0 +1,72 @@
+PIC16F877A Register Reference (Sample)
+
+========================================
+TRISC - Port C Direction Control Register
+========================================
+Address: 0x19
+Reset Value: 0xFF
+
+Bit 7-0: TRISC<7:0>
+  Port C direction control bits
+  1 = Corresponding pin configured as input
+  0 = Corresponding pin configured as output
+  Reset: 1111 1111
+
+Read/Write: R/W
+
+========================================
+PORTC - Port C Data Register
+========================================
+Address: 0x07
+Reset Value: 0x00
+
+Bit 7-0: RC<7:0>
+  Port C data bits
+  Read: Reads the actual pin state
+  Write: Writes to port latch
+  Reset: 0000 0000
+
+Read/Write: R/W
+
+========================================
+TRISB - Port B Direction Control Register
+========================================
+Address: 0x18
+Reset Value: 0xFF
+
+Bit 7-0: TRISB<7:0>
+  Port B direction control bits
+  1 = Input
+  0 = Output
+  Reset: 1111 1111
+
+Read/Write: R/W
+
+========================================
+PORTB - Port B Data Register
+========================================
+Address: 0x06
+Reset Value: 0x00
+
+Bit 7-0: RB<7:0>
+  Port B data bits
+  Reset: 0000 0000
+
+Read/Write: R/W
+
+========================================
+Notes
+========================================
+- When a pin is configured as output (TRISx=0), writing to PORTx sets the output level
+- When a pin is configured as input (TRISx=1), reading PORTx returns the actual pin state
+- Always configure TRISx before accessing PORTx
+- For digital I/O, ensure the corresponding analog function is disabled
+
+========================================
+Example Pin Configuration
+========================================
+RC0: General Purpose I/O
+RC1: General Purpose I/O
+RC2: General Purpose I/O
+RB0: General Purpose I/O with interrupt capability
+RB1: General Purpose I/O

@@ -1,0 +1,12 @@
+node_modules/
+out/*.c
+.env
+*.log
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+.vscode/
+.idea/
+dist/
+build/

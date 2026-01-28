@@ -1,0 +1,31 @@
+// This is a placeholder for sample_schematic.png
+// The actual PNG file will be created when you run: npm install
+// For now, you can use any schematic image in PNG/JPG format
+
+Schematic Description (Text Format):
+=====================================
+
+Circuit: LED and Button Test Board
+MCU: PIC16F877A
+
+Pin Connections:
+----------------
+RC0 (Pin 15) -> LED1 (Red) -> 330Ω resistor -> GND
+  Note: LED1 is active HIGH (lights up when RC0 = 1)
+
+RC1 (Pin 16) -> LED2 (Green) -> 330Ω resistor -> VCC
+  Note: LED2 is active LOW (lights up when RC1 = 0)
+
+RB0 (Pin 33) -> 10KΩ pull-up resistor -> VCC
+RB0 (Pin 33) -> Switch (KEY1) -> GND
+  Note: KEY1 is active LOW (pressed = 0, released = 1)
+
+Power:
+------
+VDD (Pin 11, 32) -> +5V
+VSS (Pin 12, 31) -> GND
+
+Summary:
+--------
+Output Pins: RC0 (LED1, active high), RC1 (LED2, active low)
+Input Pins: RB0 (KEY1, active low with pull-up)

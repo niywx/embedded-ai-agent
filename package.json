@@ -1,0 +1,41 @@
+{
+  "name": "embedded-ai-agent",
+  "version": "1.0.0",
+  "description": "嵌入式文档解析 + 原理图解析 + 基于文档和原理图自动生成嵌入式 C 代码的全流程系统",
+  "type": "module",
+  "main": "src/pipeline.js",
+  "scripts": {
+    "example": "node src/examples.js",
+    "pdf-example": "node examples/pdf_example.js",
+    "start": "node web/server.js",
+    "api": "node api_server.js",
+    "cli": "node src/cli.js",
+    "demo": "node demo.js",
+    "check-tools": "node check_tools.js"
+  },
+  "keywords": [
+    "embedded",
+    "code-generation",
+    "ai",
+    "qwen",
+    "ocr",
+    "schematic"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.2",
+    "commander": "^11.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^4.22.1",
+    "fs-extra": "^11.3.2",
+    "multer": "^1.4.5-lts.1",
+    "node-tesseract-ocr": "^2.2.1",
+    "pdf-parse": "^1.1.1",
+    "pngjs": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,88 @@
+# 最终输出模板
+
+本模板用于格式化最终输出结果。
+
+## 结构化输出格式
+
+```json
+{
+  "status": "success/error",
+  "task_type": "任务类型",
+  "timestamp": "生成时间",
+  "inputs": {
+    "datasheet": "文档来源",
+    "schematic": "原理图来源",
+    "instruction": "用户指令"
+  },
+  "extracted_data": {
+    "registers": [...],
+    "pin_mappings": [...]
+  },
+  "generated_code": "完整的 C 代码",
+  "warnings": [
+    "警告信息列表"
+  ],
+  "suggestions": [
+    "改进建议列表"
+  ]
+}
+```
+
+## 成功输出示例
+
+```json
+{
+  "status": "success",
+  "task_type": "GENERATE_CODE",
+  "timestamp": "2025-12-10 10:30:00",
+  "inputs": {
+    "datasheet": "PIC16F877A_datasheet.pdf",
+    "schematic": "led_circuit.png",
+    "instruction": "初始化 LED 并实现闪烁"
+  },
+  "extracted_data": {
+    "registers": [
+      {
+        "name": "TRISC",
+        "address": "0x19"
+      }
+    ],
+    "pin_mappings": [
+      {
+        "mcu_pin": "RC0",
+        "signal": "LED1",
+        "electrical": "active_high"
+      }
+    ]
+  },
+  "generated_code": "完整的 C 代码内容...",
+  "warnings": [],
+  "suggestions": [
+    "建议添加延时函数实现"
+  ]
+}
+```
+
+## 错误输出示例
+
+```json
+{
+  "status": "error",
+  "task_type": "GENERATE_CODE",
+  "timestamp": "2025-12-10 10:30:00",
+  "inputs": {
+    "datasheet": "unknown.pdf",
+    "schematic": "unknown.png",
+    "instruction": "生成代码"
+  },
+  "error_message": "无法提取寄存器信息：文档不清晰或格式不支持",
+  "warnings": [
+    "OCR 识别率低",
+    "建议提供更清晰的文档"
+  ],
+  "suggestions": [
+    "请提供文本格式的 Datasheet",
+    "或提高扫描质量"
+  ]
+}
+```

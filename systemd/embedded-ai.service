@@ -1,0 +1,31 @@
+[Unit]
+Description=Embedded AI Code Generation API Server
+Documentation=https://github.com/your-repo/embedded-ai-agent
+After=network.target
+
+[Service]
+Type=simple
+User=youruser
+WorkingDirectory=/home/youruser/embedded-ai-agent
+Environment="NODE_ENV=production"
+EnvironmentFile=/home/youruser/embedded-ai-agent/.env
+ExecStart=/home/youruser/.nvm/versions/node/v18.0.0/bin/node api_server.js
+Restart=on-failure
+RestartSec=10s
+StandardOutput=append:/home/youruser/embedded-ai-agent/logs/api-service.log
+StandardError=append:/home/youruser/embedded-ai-agent/logs/api-error.log
+
+# 安全设置
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/youruser/embedded-ai-agent/temp /home/youruser/embedded-ai-agent/out /home/youruser/embedded-ai-agent/logs
+
+# 资源限制
+LimitNOFILE=4096
+MemoryMax=2G
+CPUQuota=80%
+
+[Install]
+WantedBy=multi-user.target

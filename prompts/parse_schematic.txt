@@ -1,0 +1,146 @@
+你的任务是解析原理图（Schematic），提取 MCU 引脚映射关系和电气连接信息。
+
+## 输入
+原理图图片（通过 Vision 模型识别）或原理图文本描述
+
+## 输出要求
+严格按照以下 JSON 格式输出：
+
+```json
+{
+  "pin_mappings": [
+    {
+      "mcu_pin": "MCU 引脚编号或名称",
+      "signal": "信号名称（如 LED1, KEY1, TX, RX）",
+      "function": "引脚功能（如 GPIO, UART_TX, PWM）",
+      "direction": "方向（input/output/bidirectional）",
+      "electrical": "电气特性说明（如 active_low, pull_up, open_drain）"
+    }
+  ],
+  "input_pins": [
+    "所有输入引脚的列表"
+  ],
+  "output_pins": [
+    "所有输出引脚的列表"
+  ],
+  "special_requirements": [
+    "特殊要求或注意事项（如低电平有效、需要上拉电阻等）"
+  ],
+  "power_connections": {
+    "vcc": "电源电压",
+    "gnd": "地连接",
+    "other": "其他电源相关信息"
+  }
+}
+```
+
+## 解析重点
+
+### 1. 引脚识别
+- 准确识别 MCU 芯片型号和引脚编号
+- 区分物理引脚号和功能引脚名
+- 识别复用功能（如 PA0/ADC0）
+
+### 2. 信号跟踪
+- 跟踪每个引脚连接到的外部器件
+- 识别常见外设：LED、按键、蜂鸣器、传感器、通信接口
+- 注意信号命名（NET 名称）
+
+### 3. 电气特性
+- **低电平有效 (Active Low)**：识别反相圆圈、"N"后缀、"/LED"表示法
+- **高电平有效 (Active High)**：直接连接
+- **上拉/下拉电阻**：识别 R 和箭头方向
+- **开漏/推挽**：根据电路拓扑判断
+
+### 4. 方向判断
+- **输出 (Output)**：驱动 LED、蜂鸣器、继电器等
+- **输入 (Input)**：读取按键、传感器信号
+- **双向 (Bidirectional)**：I2C、1-Wire 等
+
+### 5. 常见模式识别
+
+#### LED 电路
+```
+MCU_PIN ----> LED ----> GND  （高电平点亮，output, active_high）
+MCU_PIN <---- LED <---- VCC  （低电平点亮，output, active_low）
+```
+
+#### 按键电路
+```
+MCU_PIN ---- KEY ---- GND    （按下为低，input, active_low, pull_up）
+MCU_PIN ---- KEY ---- VCC    （按下为高，input, active_high, pull_down）
+```
+
+#### 蜂鸣器电路
+```
+MCU_PIN ----> BUZZER ----> GND  （高电平响，output, active_high）
+```
+
+## 特殊标注识别
+
+- `/LED1` 或 `LED1_N` → 低电平有效
+- `LED1+` 或 `LED1` → 高电平有效
+- `10K↑` → 10K 上拉电阻
+- `OD` → 开漏输出
+- `PP` → 推挽输出
+
+## 示例
+
+输入原理图描述：
+```
+芯片：PIC16F877A
+RC0 引脚连接到 LED1，LED1 另一端接 GND，中间有限流电阻
+RC1 引脚连接到 LED2，LED2 另一端接 VCC
+RB0 引脚连接到 KEY1，KEY1 另一端接 GND，RB0 有 10K 上拉电阻
+```
+
+期望输出：
+```json
+{
+  "pin_mappings": [
+    {
+      "mcu_pin": "RC0",
+      "signal": "LED1",
+      "function": "GPIO",
+      "direction": "output",
+      "electrical": "active_high"
+    },
+    {
+      "mcu_pin": "RC1",
+      "signal": "LED2",
+      "function": "GPIO",
+      "direction": "output",
+      "electrical": "active_low"
+    },
+    {
+      "mcu_pin": "RB0",
+      "signal": "KEY1",
+      "function": "GPIO",
+      "direction": "input",
+      "electrical": "active_low, pull_up"
+    }
+  ],
+  "input_pins": ["RB0"],
+  "output_pins": ["RC0", "RC1"],
+  "special_requirements": [
+    "LED2 低电平点亮，需要输出 0 来打开",
+    "KEY1 按下时为低电平，需要检测 0",
+    "RB0 需要配置内部上拉或外部上拉电阻"
+  ],
+  "power_connections": {
+    "vcc": "5V",
+    "gnd": "GND",
+    "other": "N/A"
+  }
+}
+```
+
+## 注意事项
+
+1. 如果原理图不清晰，在 special_requirements 中说明
+2. 如果无法确定电气特性，标记为 "unknown"
+3. 不要猜测未明确显示的连接
+4. 保留原理图中的信号命名
+5. 对于复杂电路（如驱动电路），在 special_requirements 中详细说明
+
+现在请解析提供的原理图。

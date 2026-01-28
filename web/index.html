@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embedded AI Agent - Web UI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            background: #f8f9ff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .form-group input[type="file"]:hover {
+            border-color: #764ba2;
+            background: #f0f2ff;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .file-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .result pre {
+            background: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.5;
+            border: 1px solid #e0e0e0;
+        }
+
+        .error {
+            background: #fff0f0;
+            border-left-color: #ff4444;
+        }
+
+        .error h3 {
+            color: #ff4444;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .info-box {
+            background: #e8f4fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+        }
+
+        .info-box h4 {
+            color: #2196F3;
+            margin-bottom: 8px;
+        }
+
+        .info-box p {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Embedded AI Agent</h1>
+            <p>嵌入式文档解析 + 原理图解析 + 智能代码生成</p>
+        </div>
+
+        <div class="content">
+            <div class="info-box">
+                <h4>📋 使用说明</h4>
+                <p>
+                    1. 上传 Datasheet（PDF 或 TXT 格式）<br>
+                    2. 上传原理图（PDF、PNG 或 JPG 格式）<br>
+                    3. 输入代码生成需求（如"初始化所有 IO 为输出"）<br>
+                    4. 点击生成按钮，系统将自动生成嵌入式 C 代码
+                </p>
+            </div>
+
+            <form id="uploadForm">
+                <div class="form-group">
+                    <label for="datasheet">📄 Datasheet 文件</label>
+                    <input type="file" id="datasheet" name="datasheet" accept=".pdf,.txt" required>
+                    <div class="file-info">支持 PDF 和 TXT 格式</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="schematic">🔌 原理图文件</label>
+                    <input type="file" id="schematic" name="schematic" accept=".pdf,.png,.jpg,.jpeg" required>
+                    <div class="file-info">支持 PDF、PNG 和 JPG 格式</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="instruction">💡 代码生成需求</label>
+                    <textarea 
+                        id="instruction" 
+                        name="instruction" 
+                        placeholder="例如：初始化所有 IO 为输出，并提供 LED 控制函数" 
+                        required
+                    ></textarea>
+                </div>
+
+                <button type="submit" class="btn" id="submitBtn">
+                    🚀 生成代码
+                </button>
+            </form>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>正在处理中，请稍候...</p>
+            </div>
+
+            <div class="result" id="result">
+                <h3>✅ 生成成功</h3>
+                <pre id="resultCode"></pre>
+            </div>
+
+            <div class="result error" id="error">
+                <h3>❌ 生成失败</h3>
+                <pre id="errorMessage"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
